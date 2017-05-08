@@ -1,0 +1,9 @@
+*.py[cod]
+__pycache_/
+dist/
+env/
+build/
+*.egg-info/
+
+# PyCharm
+.idea/
