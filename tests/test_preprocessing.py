@@ -1,5 +1,7 @@
 import logging
+from os import path
 from unittest import TestCase
+from PIL import Image
 from octopus.preprocessing import process
 
 
@@ -16,3 +18,10 @@ class Preprocessing(TestCase):
         logging.getLogger().warning(result)
         for word in ['부산', '여행', '충전', '대만족', '주차장', '차스타그램']:
             self.assertIn(word, result)
+
+    def test_image(self):
+        cat = Image.open(path.join(path.dirname(__file__),
+                                   'data/tabby-cat.jpg'))
+        result = process(cat)
+        logging.getLogger().warning(result)
+        self.assertIn('tabby', result)

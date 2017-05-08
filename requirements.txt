@@ -1,4 +1,7 @@
 requests
+tensorflow
+keras
+h5py
 pillow
 jpype1
 konlpy
