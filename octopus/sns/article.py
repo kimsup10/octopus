@@ -23,4 +23,4 @@ class InstagramArticle():
     @property
     def image(self):
         resp = requests.get(self.image_url)
-        return Image(ByteIO(resp.content))
+        return Image.open(BytesIO(resp.content))
