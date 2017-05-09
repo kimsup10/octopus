@@ -40,7 +40,7 @@ def get_dummy_articles(target_page_id, limit=None):
 
 
 def get_user_likes_map(target_page_id, limit=None):
-    '''인스타그램 게시물을 가져옵니다
+    '''인사타그램 유저-좋아요벡터맵을 가져옵니다 (클러스터링용)
 
     :param target_page_id: 타겟 페이지 ID ex) huntrax11
     :return: {'follwer1':[True, False, ....], ...}
