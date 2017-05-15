@@ -1,4 +1,5 @@
 from io import BytesIO
+from operator import itemgetter
 import requests
 from PIL import Image
 
@@ -24,3 +25,14 @@ class InstagramArticle():
     def image(self):
         resp = requests.get(self.image_url)
         return Image.open(BytesIO(resp.content))
+
+    @staticmethod
+    def from_media(api, media):
+        return InstagramArticle(
+            (media['caption'] or {}).get('text', ''),
+            media['images']['standard_resolution']['url'],
+            map(itemgetter('id'), api.get_likes(media['id'])['data'])
+        )
+
+    def __repr__(self):
+        return repr(self.__dict__)
