@@ -18,7 +18,7 @@ class InstagramAPI():
         url = API_BASE + '/oauth/authorize?' \
             + urlencode({
                 'client_id': client_id,
-                'redirect_uri': 'https://devel.huntrax.com/ouath/',
+                'redirect_uri': 'https://devel.huntrax.com/oauth/',
                 'response_type': 'token',
                 'scope': 'public_content'
             })
