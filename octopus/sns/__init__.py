@@ -21,29 +21,7 @@ def get_articles(target_page_id=None, limit=None):
     return list(map(converter, articles))
 
 
-def get_dummy_articles(target_page_id, limit=None):
-    '''가짜 인스타그램 게시물을 가져옵니다
-
-    :param target_page_id: 타겟 페이지 ID
-    :param limit: 갯수 제한
-    :return: list of `octopus.instagram.InstagramArticle`
-    :rtype: list
-    '''
-    return [
-        InstagramArticle(
-            'Dummy Text1',
-            'https://scontent-icn1-1.cdninstagram.com/t51.2885-19/s320x320/14719833_310540259320655_1605122788543168512_a.jpg',
-            ['huntrax11', 'instagram']
-        ),
-        InstagramArticle(
-            'Dummy Text2',
-            'https://scontent-icn1-1.cdninstagram.com/t51.2885-19/s320x320/14719833_310540259320655_1605122788543168512_a.jpg',
-            ['instagram', 'sup']
-        ),
-    ]
-
-
-def get_user_likes_map(target_page_id, limit=None):
+def get_user_likes_map(target_page_id=None, limit=None):
     '''인사타그램 유저-좋아요벡터맵을 가져옵니다 (클러스터링용)
 
     :param target_page_id: 타겟 페이지 ID ex) huntrax11
