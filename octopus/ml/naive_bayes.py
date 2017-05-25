@@ -4,7 +4,7 @@ from openpyxl import load_workbook
 
 class naive:
     def __init__(self):
-        self.articles = get_articles()
+        self.articles = get_articles('yadoran_q')
         self.get_users_size = len(self.articles[0].liked_users)
 
 
