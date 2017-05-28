@@ -21,7 +21,6 @@ class KMeansClustering:
         users = list(self.user_likes_map.keys())
         centroid_users = [users[random.randrange(self.num_of_users)]
                           for i in range(self.num_of_clusters)]
-        print(centroid_users)
 
         while True:
             if len(set(centroid_users)) == self.num_of_clusters:
@@ -65,11 +64,3 @@ class KMeansClustering:
                     self.clusters[nearest_cluster]["centroid"] = new_centroid
 
         return self.clusters
-
-
-'''
-k = KMeansClustering(get_dummy_user_likes_map(30, 50))
-clusters = k.cluster()
-for cluster in clusters:
-    print(cluster["users"])
-'''
