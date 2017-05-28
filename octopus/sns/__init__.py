@@ -2,7 +2,7 @@ from functools import reduce, partial
 from operator import attrgetter
 from .article import InstagramArticle
 from .instagram import InstagramAPI
-
+import numpy as np
 api = InstagramAPI()
 
 
@@ -30,5 +30,5 @@ def get_user_likes_map(target_page_id=None, limit=None):
     '''
     articles = get_articles(target_page_id, limit)
     users = sorted(reduce(set.union, map(attrgetter('liked_users'), articles)))
-    return {user: [user in article.liked_users for article in articles]
+    return {user: np.array([user in article.liked_users for article in articles])
             for user in users}

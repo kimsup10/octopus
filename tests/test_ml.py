@@ -1,7 +1,8 @@
 import logging
 from unittest import TestCase
 from octopus.ml.naive_bayes import NaiveBayes
-from octopus.sns import get_articles
+from octopus.ml.clustering import KMeansClustering
+from octopus.sns import get_articles, get_user_likes_map
 
 
 class ML(TestCase):
@@ -19,3 +20,11 @@ class ML(TestCase):
             logger.warning("NB Prob.: %.2f" % probability)
             logger.warning("NB Cnt.: %d" % predicted_likes_cnt)
             self.assertEqual(predicted_likes_cnt, Y)
+
+    def test_clustering(self):
+        logger = logging.getLogger()
+        k = KMeansClustering(get_user_likes_map(), 2)
+        clusters = k.cluster()
+        for cluster in clusters:
+            logger.warning(cluster["users"])
+
