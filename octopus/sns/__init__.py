@@ -1,8 +1,8 @@
+import random
 from functools import reduce, partial
 from operator import attrgetter
 from .article import InstagramArticle
 from .instagram import InstagramAPI
-import numpy as np
 api = InstagramAPI()
 
 
@@ -30,5 +30,17 @@ def get_user_likes_map(target_page_id=None, limit=None):
     '''
     articles = get_articles(target_page_id, limit)
     users = sorted(reduce(set.union, map(attrgetter('liked_users'), articles)))
-    return {user: np.array([user in article.liked_users for article in articles])
+    return {user: [user in article.liked_users for article in articles]
             for user in users}
+
+
+def get_dummy_user_likes_map(N, M):
+    '''더미 인사타그램 유저-좋아요벡터맵을 가져옵니다 (클러스터링용)
+
+    :param N: user 수
+    :param M: article 수
+    :return: {'follwer1':[True, False, ....], ...}
+    :rtype: dict
+    '''
+    return {str(i): [random.choice([True, False]) for j in range(M)]
+            for i in range(N)}
