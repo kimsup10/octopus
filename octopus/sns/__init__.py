@@ -1,5 +1,6 @@
 import random
-from functools import reduce, partial
+from functools import reduce
+from itertools import islice
 from operator import attrgetter
 from .article import InstagramArticle
 from .instagram import InstagramAPI
@@ -16,9 +17,10 @@ def get_articles(target_page_id=None, limit=None):
     '''
     if limit is None:
         limit = 100
-    articles = api.get_recent_media(target_page_id)['data'][:limit]
-    converter = partial(InstagramArticle.from_media, api)
-    return list(map(converter, articles))
+    articles = list(islice(api.get_recent_media(target_page_id), limit))
+    likes = [api.get_likes(media['id']) for media in articles]
+    return list(map(lambda args: InstagramArticle.from_media(*args),
+                    zip(articles, likes)))
 
 
 def get_user_likes_map(target_page_id=None, limit=None):

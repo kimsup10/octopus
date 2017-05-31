@@ -27,11 +27,11 @@ class InstagramArticle():
         return Image.open(BytesIO(resp.content))
 
     @staticmethod
-    def from_media(api, media):
+    def from_media(media, likes):
         return InstagramArticle(
             (media['caption'] or {}).get('text', ''),
             media['images']['standard_resolution']['url'],
-            map(itemgetter('id'), api.get_likes(media['id'])['data'])
+            map(itemgetter('id'), likes)
         )
 
     def __repr__(self):
