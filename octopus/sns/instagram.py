@@ -1,72 +1,53 @@
-from urllib.parse import urlencode
-from requests import Session
-from .. import config
-
-
-API_BASE = 'https://api.instagram.com'
+from functools import lru_cache
+from selenium.webdriver import Firefox
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+from .article import InstagramArticle
 
 
 class InstagramAPI():
     def __init__(self):
-        # TODO: proper implementation
-        self.token = config['instagram']['access_token']
-        self.session = Session()
+        self.driver = Firefox()
+        self.authenticate()
+
+    def get_shared_data(self, key):
+        return self.driver.execute_script(
+            'return window._sharedData.entry_data'
+        )[key][0]['graphql']
 
     def authenticate(self):
-        if self.token:
-            return self.token
-        client_id = config['instagram']['client_id']
-        url = API_BASE + '/oauth/authorize?' \
-            + urlencode({
-                'client_id': client_id,
-                'redirect_uri': 'https://devel.huntrax.com/oauth/',
-                'response_type': 'token',
-                'scope': 'public_content'
-            })
-        # TODO: proper implementation
-        print(url)
-        self.token = input('Token: ').strip()
-        return self.token
+        self.driver.get('https://www.instagram.com/accounts/login/')
+        WebDriverWait(self.driver, 30).until(
+            EC.presence_of_element_located((
+                By.CSS_SELECTOR,
+                'nav a[class*=NavProfile]'
+            ))
+        )
+        self.user = self.get_shared_data('FeedPage')['user']
+        self.username = self.user['username']
 
-    def check_envelope(self, resp):
-        resp = resp.json()
-        assert resp['meta']['code'] == 200, \
-            'Invalid status code: %r' % resp['meta']
-        yield from resp['data']
-        if 'pagination' in resp and 'next_url' in resp['pagination']:
-            resp = self.session.get(resp['pagination']['next_url'])
-            yield from self.check_envelope(resp)
-
-    def find_user(self, username):
-        resp = self.session.get(API_BASE+'/v1/users/search', params={
-            'access_token': self.token,
-            'q': username,
-        })
-        resp = self.check_envelope(resp)
-        return next(filter(lambda u: u['username'] == username, resp))
-
-    def get_recent_media(self, username=None):
-        if username:
-            user_id = self.find_user(username)['id']
-            resp = self.session.get(
-                API_BASE+'/v1/users/%s/media/recent/' % (user_id, ),
-                params={
-                    'access_token': self.token,
-                })
-        else:
-            resp = self.session.get(
-                API_BASE+'/v1/users/self/media/recent/',
-                params={
-                    'access_token': self.token,
-                })
-        resp = self.check_envelope(resp)
-        return resp
-
-    def get_likes(self, media_id):
-        resp = self.session.get(
-            API_BASE+'/v1/media/%s/likes' % (media_id, ),
-            params={
-                'access_token': self.token,
-            })
-        resp = self.check_envelope(resp)
-        return resp
+    @lru_cache()
+    def get_articles(self, username=None):
+        if username is None:
+            username = self.username
+        self.driver.get('https://www.instagram.com/%s' % username)
+        try:
+            self.driver.find_element_by_link_text('Load more').click()
+        except NoSuchElementException:
+            pass
+        imgs = self.driver.find_elements_by_css_selector('main a[href^="/p/"]')
+        imgs = list(map(lambda img: img.get_attribute('href'), imgs))
+        r = []
+        for img in imgs:
+            self.driver.get(img)
+            m = self.get_shared_data('PostPage')['shortcode_media']
+            r.append(InstagramArticle(
+                ''.join(map(lambda e: e['node']['text'],
+                            m['edge_media_to_caption']['edges'])),
+                m['display_url'],
+                map(lambda e: e['node']['username'],
+                    m['edge_media_preview_like']['edges'])
+            ))
+        return r
