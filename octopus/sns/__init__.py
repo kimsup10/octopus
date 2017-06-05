@@ -1,8 +1,10 @@
 from functools import reduce
 from operator import attrgetter
+from .. import config
 from .instagram import InstagramAPI
 
-api = InstagramAPI()
+api = InstagramAPI(config['instagram']['username'],
+                   config['instagram']['password'])
 
 
 def get_articles(target_page_id=None, limit=None):

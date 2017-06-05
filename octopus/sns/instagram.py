@@ -1,5 +1,5 @@
 from functools import lru_cache
-from selenium.webdriver import Firefox
+from selenium.webdriver import Chrome
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -8,17 +8,24 @@ from .article import InstagramArticle
 
 
 class InstagramAPI():
-    def __init__(self):
-        self.driver = Firefox()
-        self.authenticate()
+    def __init__(self, username, password):
+        self.driver = Chrome()
+        self.authenticate(username, password)
 
     def get_shared_data(self, key):
         return self.driver.execute_script(
             'return window._sharedData.entry_data'
         )[key][0]['graphql']
 
-    def authenticate(self):
+    def authenticate(self, username, password):
         self.driver.get('https://www.instagram.com/accounts/login/')
+        user_field = self.driver.find_element_by_name('username')
+        user_field.clear()
+        user_field.send_keys(username)
+        pass_field = self.driver.find_element_by_name('password')
+        pass_field.clear()
+        pass_field.send_keys(password)
+        self.driver.find_element_by_tag_name('form').submit()
         WebDriverWait(self.driver, 30).until(
             EC.presence_of_element_located((
                 By.CSS_SELECTOR,
