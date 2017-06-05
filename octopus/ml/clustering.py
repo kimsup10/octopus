@@ -19,14 +19,15 @@ class KMeansClustering:
         }]
 
         for i in range(1, self.num_of_clusters):
-            Dx2 = list(map(lambda user: self._distance(self.user_likes_map[user],
-                                                       self.get_nearest_cluster(user)['centroid'])**2,
-                           self.user_likes_map.keys()))
-            Dx2Sum = sum(Dx2)
-            Dx2Proportion = list(map(lambda d: d/Dx2Sum, Dx2))
+            d_square = np.array(
+                [self._distance(self.user_likes_map[user],
+                                self.get_nearest_cluster(user)['centroid'])
+                 for user in self.user_likes_map]) ** 2
+            ds_proportion = d_square / d_square.sum()
+            choice = np.random.choice(d_square, 1, p=ds_proportion)
+            i = np.where(d_square == choice)[0][0]
             self.clusters.append({
-                'centroid': list(self.user_likes_map.values())[
-                                     Dx2.index(np.random.choice(Dx2, 1, p=Dx2Proportion))],
+                'centroid': list(self.user_likes_map.values())[i],
                 'users': [],
             })
 
