@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from .user import InstagramUser
 from .article import InstagramArticle
 
 
@@ -32,13 +33,13 @@ class InstagramAPI():
                 'nav a[class*=NavProfile]'
             ))
         )
-        self.user = self.get_shared_data('FeedPage')['user']
-        self.username = self.user['username']
+        self.user = InstagramUser(**self.get_shared_data('FeedPage')['user'])
+        self.username = self.user.username
 
     @lru_cache()
     def get_articles(self, username=None):
         if username is None:
-            username = self.username
+            username = self.user.username
         self.driver.get('https://www.instagram.com/%s' % username)
         try:
             self.driver.find_element_by_link_text('Load more').click()
@@ -54,10 +55,10 @@ class InstagramAPI():
                 ''.join(map(lambda e: e['node']['text'],
                             m['edge_media_to_caption']['edges'])),
                 m['display_url'],
-                map(lambda e: e['node']['username'],
+                map(lambda e: InstagramUser(**e['node']),
                     m['edge_media_preview_like']['edges']),
                 m['edge_media_preview_like']['count'],
-                map(lambda e: e['node']['owner']['username'],
+                map(lambda e: InstagramUser(**e['node']['owner']),
                     m['edge_media_to_comment']['edges']),
                 m['edge_media_to_comment']['count']
             ))
