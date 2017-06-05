@@ -6,3 +6,4 @@ pillow
 jpype1
 konlpy
 selenium
+Flask
