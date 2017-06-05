@@ -55,6 +55,10 @@ class InstagramAPI():
                             m['edge_media_to_caption']['edges'])),
                 m['display_url'],
                 map(lambda e: e['node']['username'],
-                    m['edge_media_preview_like']['edges'])
+                    m['edge_media_preview_like']['edges']),
+                m['edge_media_preview_like']['count'],
+                map(lambda e: e['node']['owner']['username'],
+                    m['edge_media_to_comment']['edges']),
+                m['edge_media_to_comment']['count']
             ))
         return r

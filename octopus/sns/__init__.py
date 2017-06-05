@@ -28,6 +28,7 @@ def get_user_likes_map(target_page_id=None, limit=None):
     :rtype: dict
     '''
     articles = get_articles(target_page_id, limit)
-    users = sorted(reduce(set.union, map(attrgetter('liked_users'), articles)))
+    users = sorted(reduce(set.union, map(attrgetter('engaged_users'),
+                                         articles)))
     return {user: [user in article.liked_users for article in articles]
             for user in users}
