@@ -16,7 +16,8 @@ def visualize_ml(username=api.username):
     nodes = []
     for i, cluster in enumerate(k.cluster()):
         nodes.extend(list(
-            map(lambda user: {"cluster": i, "radius": len(user)},
+            map(lambda user: {"cluster": i, "radius": len(user.username),
+                              "icon": user.profile_pic_url, "name": user.username},
                 cluster.get('users'))));
     return render_template('cluster_visualize.htm',
                            username=username, nodes=nodes,

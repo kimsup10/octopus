@@ -1,3 +1,4 @@
+import random
 import numpy as np
 
 
@@ -13,9 +14,21 @@ class KMeansClustering:
 
     def init_clusters(self):
         self.clusters = [{
-            'centroid': np.random.choice([True, False], self.num_of_attr),
+            'centroid': random.choice(list(self.user_likes_map.values())),
             'users': [],
-        } for i in range(self.num_of_clusters)]
+        }]
+
+        for i in range(1, self.num_of_clusters):
+            Dx2 = list(map(lambda user: self._distance(self.user_likes_map[user],
+                                                       self.get_nearest_cluster(user)['centroid'])**2,
+                           self.user_likes_map.keys()))
+            Dx2Sum = sum(Dx2)
+            Dx2Proportion = list(map(lambda d: d/Dx2Sum, Dx2))
+            self.clusters.append({
+                'centroid': list(self.user_likes_map.values())[
+                                     Dx2.index(np.random.choice(Dx2, 1, p=Dx2Proportion))],
+                'users': [],
+            })
 
     def compute_centroid(self, users):
         return np.round(np.mean([self.user_likes_map[user]

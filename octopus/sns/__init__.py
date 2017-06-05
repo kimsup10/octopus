@@ -30,5 +30,5 @@ def get_user_likes_map(target_page_id=None, limit=None):
     articles = get_articles(target_page_id, limit)
     users = sorted(reduce(set.union, map(attrgetter('engaged_users'),
                                          articles)))
-    return {user: [user in article.liked_users for article in articles]
+    return {user: [user in article.engaged_users for article in articles]
             for user in users}
