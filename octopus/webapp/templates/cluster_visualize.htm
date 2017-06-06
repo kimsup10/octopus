@@ -1,16 +1,66 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <title>octopus - {{username}}</title>
 </head>
 <body>
 <script src="/static/js/d3.v3.min.js"></script>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Octopus</a>
+        </div>
+        <div class="navbar-form navbar-right">
+          <div class="form-group">
+
+        </div>
+        </div>
+      </div>
+    </nav>
+<div style="margin-top:50px; margin-left:0.5%">
+  <div class="row">
+    <div class="col-md-5" align="center" style="margin-top:5%">
+      <div class="row">
+              <div class="col-md-6" align="center">
+                <img class="img-circle" src={{user_pic_url}} alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
+              </div>
+              <div class="col-md-6" align="center" style="margin-top:5%; vertical-align:middle;">
+                <h2>{{username}}</h2>
+                <br>
+                <p style="font-size:20px;">Articles: <strong>145</strong> </p>
+                <p style="font-size:20px;">Follower: <strong>212</strong> persons</p>
+                <p style="font-size:20px;">Follow: <strong>212</strong> persons</p>
+              </div>
+      </div>
+      <div class="row">
+              <div class="col-md-6" align="center">
+                <img src={{pic}} alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
+              </div>
+              <div class="col-md-6"  align="center" style="margin-top:12%; vertical-align:middle;">
+                <p style="font-size:20px;"><stong>"</stong> {{text}} <stong>"</stong></p>
+                <p style="font-size:20px;">This articles would get</p>
+                <p style="font-size:20px;"><strong>20</strong> likes!</p>
+              </div>
+            </div>
+    </div>
+    <div class="col-md-7" id="clustering">
+    </div>
+  </div>
+</div>
+<img src="static/logo.png" style="position: fixed; bottom: 0; right: 0; height:15%; width:15%">
 <script>
 
-var width = window.innerWidth,
-    height = window.innerHeight,
-    padding = 1.5, // separation between same-color nodes
-    clusterPadding = 10, // separation between different-color nodes
+var width = window.innerHeight,
+    height = window.innerHeight * 0.8,
+    padding = 2, // separation between same-color nodes
+    clusterPadding = 20, // separation between different-color nodes
     maxRadius = 0;
 
 var color = d3.scale.category10()
@@ -46,7 +96,7 @@ var force = d3.layout.force()
     .on("tick", tick)
     .start();
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#clustering").append("svg")
     .attr("width", width)
     .attr("height", height);
 
@@ -65,13 +115,29 @@ var node = svg.selectAll("circle")
     .data(nodes)
     .enter().append("circle")
     .style("stroke", function(d) { return color(d.cluster); })
-    .style("stroke-width", 3.0)
+    .style("stroke-width", 1)
     .style("fill", function(d) { return `url(#pic_${d.name})`; })
     .call(force.drag);
 
 node.on('click', function(d) {
   document.location = `/${d.name}`;
 });
+
+node.on("mouseover",function(d){
+        d3.select(this)
+        .style("fill", "white")
+        svg.append("text")
+        .attr({id: "username", x: this.cx.baseVal.value, y: this.cy.baseVal.value})
+        .style("text-anchor", "middle")
+        .style("font-weight","bold")
+        .text(function() { return d.name })
+        .call(force.drag);
+      })
+      .on("mouseout",function(){
+        d3.select(this)
+        .style("fill", function(d) { return `url(#pic_${d.name})`; })
+        svg.select('#username').remove()
+      });
 
 node.transition()
     .duration(750)

@@ -35,6 +35,7 @@ class InstagramAPI():
         )
         self.user = InstagramUser(**self.get_shared_data('FeedPage')['user'])
         self.username = self.user.username
+        self.user_pic_url = self.user.profile_pic_url
 
     @lru_cache()
     def get_articles(self, username=None):
