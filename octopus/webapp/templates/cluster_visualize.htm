@@ -54,11 +54,12 @@ svg.selectAll('pattern')
    .data(nodes)
    .enter().append('pattern')
    .attr('id', function(d) { return `pic_${d.name}` })
-   .attr('width', 32)
-   .attr('height', 32)
+   .attr('width', function(d) { return d.radius * 2 })
+   .attr('height', function(d) { return d.radius * 2 })
    .append('image')
    .attr('xlink:href', function(d) { return d.icon })
-   .attr('width', 32)
+   .attr('width', function(d) { return d.radius * 2 })
+   .attr('height', function(d) { return d.radius * 2 })
 
 var node = svg.selectAll("circle")
     .data(nodes)
@@ -67,6 +68,10 @@ var node = svg.selectAll("circle")
     .style("stroke-width", 3.0)
     .style("fill", function(d) { return `url(#pic_${d.name})`; })
     .call(force.drag);
+
+node.on('click', function(d) {
+  document.location = `/${d.name}`;
+});
 
 node.transition()
     .duration(750)
