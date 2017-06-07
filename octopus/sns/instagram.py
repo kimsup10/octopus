@@ -47,7 +47,7 @@ class InstagramAPI():
         self.username = self.user.username
 
     @cached
-    def get_articles(self, username=None):
+    def get_articles(self, username=None, limit=None):
         if self.user is None:
             self.authenticate(*self.credential)
         if username is None:
@@ -67,10 +67,11 @@ class InstagramAPI():
         imgs = self.driver.find_elements_by_css_selector('main a[href^="/p/"]')
         imgs = list(map(lambda img: img.get_attribute('href'), imgs))
         r = []
-        for img in imgs:
+        for img in imgs[:limit]:
             self.driver.get(img)
             m = self.get_shared_data('PostPage')['shortcode_media']
             r.append(InstagramArticle(
+                InstagramUser(**m['owner']),
                 ''.join(map(lambda e: e['node']['text'],
                             m['edge_media_to_caption']['edges'])),
                 m['display_url'],
