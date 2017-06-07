@@ -4,9 +4,14 @@ import numpy as np
 
 class KMeansClustering:
     def __init__(self, user_likes_map, K=None):
-        self.user_likes_map = user_likes_map
+        self.user_likes_map = {
+            user: likes_map
+            for user, likes_map in user_likes_map.items()
+            if np.count_nonzero(likes_map) > len(likes_map)*0.05
+        }
+
         if K is None:
-            K = np.sqrt(len(user_likes_map)).astype('int')
+            K = np.sqrt(len(self.user_likes_map)).astype('int')
         self.num_of_clusters = K
         self.num_of_users = len(user_likes_map)
         self.num_of_attr = len(list(user_likes_map.values())[0])
