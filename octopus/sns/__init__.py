@@ -16,8 +16,8 @@ def get_articles(target_page_id=None, limit=None):
     :rtype: list
     '''
     if limit is None:
-        limit = 100
-    return api.get_articles(target_page_id)[:limit]
+        limit = 50
+    return api.get_articles(target_page_id, limit)
 
 
 def get_user_likes_map(target_page_id=None, limit=None):

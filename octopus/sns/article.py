@@ -5,6 +5,8 @@ from PIL import Image
 
 class InstagramArticle():
     '''Instagram Article'''
+    '''작성자'''
+    user = None
 
     '''Article 작성자'''
     user = None
