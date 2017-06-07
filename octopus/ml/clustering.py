@@ -16,7 +16,6 @@ class KMeansClustering:
         self.clusters = [{
             'centroid': random.choice(list(self.user_likes_map.values())),
             'users': [],
-            'distances': [],
         }]
         for i in range(1, self.num_of_clusters):
             d_square = np.array(
@@ -29,7 +28,6 @@ class KMeansClustering:
             self.clusters.append({
                 'centroid': list(self.user_likes_map.values())[i],
                 'users': [],
-                'distances': [],
             })
 
     def compute_centroid(self, users):
@@ -63,8 +61,9 @@ class KMeansClustering:
                     cluster['centroid'] = new_centroid
 
         for cluster in self.clusters:
-            for user in cluster['users']:
-                cluster['distances'].append(self._distance(self.user_likes_map[user],
-                                                           cluster['centroid']))
+            cluster['distances'] = [
+                self._distance(self.user_likes_map[user], cluster['centroid'])
+                for user in cluster['users']
+            ]
 
         return self.clusters

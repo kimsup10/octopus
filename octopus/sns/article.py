@@ -6,6 +6,9 @@ from PIL import Image
 class InstagramArticle():
     '''Instagram Article'''
 
+    '''Article 작성자'''
+    user = None
+
     '''Instagram 글'''
     text = None
 
@@ -24,8 +27,9 @@ class InstagramArticle():
     '''글에 댓글 단 유저 목록'''
     commented_users = None
 
-    def __init__(self, text, image_url, liked_users, likes_count,
+    def __init__(self, user, text, image_url, liked_users, likes_count,
                  commented_users, comments_count):
+        self.user = user
         self.text = text
         self.image_url = image_url
         self.liked_users = set(liked_users)

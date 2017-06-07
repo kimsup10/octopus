@@ -35,7 +35,6 @@ class InstagramAPI():
         )
         self.user = InstagramUser(**self.get_shared_data('FeedPage')['user'])
         self.username = self.user.username
-        self.user_pic_url = self.user.profile_pic_url
 
     @lru_cache()
     def get_articles(self, username=None):
@@ -53,6 +52,7 @@ class InstagramAPI():
             self.driver.get(img)
             m = self.get_shared_data('PostPage')['shortcode_media']
             r.append(InstagramArticle(
+                InstagramUser(**m['owner']),
                 ''.join(map(lambda e: e['node']['text'],
                             m['edge_media_to_caption']['edges'])),
                 m['display_url'],

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-  <title>octopus - {{username}}</title>
+  <title>octopus - {{user.username}}</title>
   <script src="/static/js/jquery-3.2.1.min.js"></script>
   <script src="/static/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="/static/css/bootstrap.min.css">
@@ -9,48 +9,48 @@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Octopus</a>
-        </div>
-        <div class="navbar-form navbar-right">
-          <div class="form-group">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Octopus</a>
+    </div>
+    <div class="navbar-form navbar-right">
+      <div class="form-group">
 
-        </div>
-        </div>
-      </div>
-    </nav>
+    </div>
+    </div>
+  </div>
+</nav>
 <div style="margin-top:50px; margin-left:0.5%">
   <div class="row">
     <div class="col-md-5" align="center" style="margin-top:5%">
       <div class="row">
-              <div class="col-md-6" align="center">
-                <img class="img-circle" src={{user_pic_url}} alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
-              </div>
-              <div class="col-md-6" align="center" style="margin-top:5%; vertical-align:middle;">
-                <h2>{{username}}</h2>
-                <br>
-                <p style="font-size:20px;">Articles: <strong>145</strong> </p>
-                <p style="font-size:20px;">Follower: <strong>212</strong> persons</p>
-                <p style="font-size:20px;">Follow: <strong>212</strong> persons</p>
-              </div>
+        <div class="col-md-6" align="center">
+          <img class="img-circle" src={{user.profile_pic_url}} alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
+        </div>
+        <div class="col-md-6" align="center" style="margin-top:5%; vertical-align:middle;">
+          <h2>{{user.username}}</h2>
+          <br>
+          <p style="font-size:20px;">Articles: <strong>{{articles|count}}</strong> </p>
+        </div>
       </div>
+      {% for article in articles %}
       <div class="row">
-              <div class="col-md-6" align="center">
-                <img src={{pic}} alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
-              </div>
-              <div class="col-md-6"  align="center" style="margin-top:12%; vertical-align:middle;">
-                <p style="font-size:20px;"><stong>"</stong> {{text}} <stong>"</stong></p>
-                <p style="font-size:20px;">This articles would get</p>
-                <p style="font-size:20px;"><strong>20</strong> likes!</p>
-              </div>
-            </div>
+        <div class="col-md-6" align="center">
+          <img src={{article.image_url}} alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
+        </div>
+        <div class="col-md-6"  align="center" style="margin-top:12%; vertical-align:middle;">
+          <p style="font-size:20px;"><stong>"</stong> {{article.text}} <stong>"</stong></p>
+          <p style="font-size:20px;">This articles would get</p>
+          <p style="font-size:20px;"><strong>{{article.likes_count}}</strong> likes!</p>
+        </div>
+      </div>
+      {% endfor %}
     </div>
     <div class="col-md-7" id="clustering">
     </div>
