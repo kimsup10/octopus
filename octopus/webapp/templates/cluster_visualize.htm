@@ -1,37 +1,11 @@
-<!DOCTYPE html>
-<head>
-  <meta charset="utf-8">
-  <title>octopus - {{user.username}}</title>
-  <script src="/static/js/jquery-3.2.1.min.js"></script>
-  <script src="/static/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-  <script src="/static/js/d3.v3.min.js"></script>
-</head>
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">Octopus</a>
-    </div>
-    <div class="navbar-form navbar-right">
-      <div class="form-group">
-
-    </div>
-    </div>
-  </div>
-</nav>
-<div style="margin-top:50px; margin-left:0.5%">
+{% extends 'layout.html' %}
+{% block body %}
   <div class="row">
     <div class="col-md-5" align="center" style="margin-top:5%">
       <div class="row">
         <div class="col-md-6" align="center">
-          <img class="img-circle" src={{user.profile_pic_url}} alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
+          <img class="img-circle" src="{{user.profile_pic_url}}"
+               alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
         </div>
         <div class="col-md-6" align="center" style="margin-top:5%; vertical-align:middle;">
           <h2>{{user.username}}</h2>
@@ -52,15 +26,12 @@
       </div>
       {% endfor %}
     </div>
-    <div class="col-md-7" id="clustering">
+    <div class="col-md-7" id="clustering" style="position: fixed; bottom: 0; right: 0;">
     </div>
   </div>
-</div>
-<img src="static/logo.png" style="position: fixed; bottom: 0; right: 0; height:15%; width:15%">
 <script>
-
 var width = window.innerHeight,
-    height = window.innerHeight * 0.8,
+    height = window.innerHeight,
     padding = 2, // separation between same-color nodes
     clusterPadding = 20, // separation between different-color nodes
     maxRadius = 0;
@@ -131,7 +102,8 @@ node.on("mouseover",function(d){
         svg.append("text")
         .attr({id: "username", x: this.cx.baseVal.value, y: this.cy.baseVal.value})
         .style("text-anchor", "middle")
-        .style("font-weight","bold")
+        .style("font-weight", "bold")
+        .style("font-size", "10px")
         .text(function() { return d.name })
         .call(force.drag);
       })
@@ -203,5 +175,5 @@ function collide(alpha) {
     });
   };
 }
-
 </script>
+{% endblock %}
