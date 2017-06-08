@@ -1,12 +1,11 @@
-from io import BytesIO
+import os
+import hashlib
 import requests
 from PIL import Image
 
 
 class InstagramArticle():
     '''Instagram Article'''
-    '''작성자'''
-    user = None
 
     '''Article 작성자'''
     user = None
@@ -41,8 +40,15 @@ class InstagramArticle():
 
     @property
     def image(self):
-        resp = requests.get(self.image_url)
-        return Image.open(BytesIO(resp.content))
+        filename = 'data/img/%s-%s' % (
+            self.user.username,
+            hashlib.sha1(self.image_url.encode()).hexdigest()
+        )
+        if not os.path.isfile(filename):
+            resp = requests.get(self.image_url)
+            with open(filename, 'wb') as f:
+                f.write(resp.content)
+        return Image.open(filename)
 
     @property
     def engaged_users(self):
