@@ -2,6 +2,7 @@ import os
 import hashlib
 import requests
 from PIL import Image
+from ..preprocessing import process
 
 
 class InstagramArticle():
@@ -53,6 +54,17 @@ class InstagramArticle():
     @property
     def engaged_users(self):
         return self.liked_users | self.commented_users
+
+    @property
+    def tokens(self):
+        if hasattr(self, '_tokens'):
+            return self._tokens
+        self._tokens = set(process(self.text))
+        try:
+            self._tokens |= set(process(self.image))
+        except Exception:
+            pass
+        return self._tokens
 
     def __repr__(self):
         return repr(self.__dict__)

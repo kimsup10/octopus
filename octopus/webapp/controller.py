@@ -1,10 +1,9 @@
 from flask import Flask, render_template, abort
 from octopus.sns import get_articles, get_user_likes_map
 from octopus.ml.clustering import KMeansClustering
+from octopus.ml.naive_bayes import NaiveBayes
 
 app = Flask(__name__)
-app.debug = True
-
 
 @app.route('/favicon.ico')
 def favicon():
@@ -29,11 +28,12 @@ def visualize_ml(username='huntrax11'):
                 "icon": user.profile_pic_url,
                 "name": user.username
             })
+    nb = NaiveBayes(articles)
 
     return render_template('cluster_visualize.htm',
                            user=articles[0].user,
                            nodes=nodes, m=k.num_of_clusters,
-                           articles=articles)
+                           nb=nb, articles=articles)
 
 
 if __name__ == "__main__":

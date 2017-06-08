@@ -2,31 +2,53 @@
 {% block body %}
   <div class="row">
     <div class="col-md-5" align="center" style="margin-top:5%">
-      <div class="row">
-        <div class="col-md-6" align="center">
-          <img class="img-circle" src="{{user.profile_pic_url}}"
-               alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
-        </div>
-        <div class="col-md-6" align="center" style="margin-top:5%; vertical-align:middle;">
-          <h2>{{user.username}}</h2>
-          <br>
-          <p style="font-size:20px;">Articles: <strong>{{articles|count}}</strong> </p>
+      <div class="row" style="margin-bottom: 5%">
+        <div class="col" align="center">
+          <div class="media">
+            <div class="media-left media-top">
+              <img class="img-circle" src="{{user.profile_pic_url}}"
+                   alt="User Profile Image" style="width: 128px; height: 128px; margin-top:5%">
+            </div>
+            <div class="media-body">
+              <h2>{{user.username}}</h2>
+              <p style="font-size: 20px;">
+                Articles: <strong>{{articles|count}}</strong>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       {% for article in articles %}
       <div class="row">
-        <div class="col-md-6" align="center">
-          <img src={{article.image_url}} alt="User Profile Image" style="width:100%; height:100%; margin-top:5%">
-        </div>
-        <div class="col-md-6"  align="center" style="margin-top:12%; vertical-align:middle;">
-          <p style="font-size:20px;"><stong>"</stong> {{article.text}} <stong>"</stong></p>
-          <p style="font-size:20px;">This articles would get</p>
-          <p style="font-size:20px;"><strong>{{article.likes_count}}</strong> likes!</p>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="media">
+              <div class="media-top">
+                <img class="media-object img-thumbnail" src="{{article.image_url}}"
+                     style="max-width: 500px; max-height: 500px">
+              </div>
+              <div class="media-body">
+                {{article.text}}
+              </div>
+            </div>
+          </div>
+          <ul class="list-group">
+            <li class="list-group-item">
+              Tokens: <strong>{{article.tokens|join(', ')}}</strong>
+            </li>
+          </ul>
+          <div class="panel-footer">
+            <p>This articles would get <strong>
+                {{nb.predict(article)|round}}
+              </strong> likes!<br/>
+              Actual: {{article.likes_count}} likes</p>
+          </div>
         </div>
       </div>
       {% endfor %}
     </div>
-    <div class="col-md-7" id="clustering" style="position: fixed; bottom: 0; right: 0;">
+    <div class="col-md-7" id="clustering"
+         style="position: fixed; bottom: 0; right: 0;">
     </div>
   </div>
 <script>
