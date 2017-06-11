@@ -1,25 +1,43 @@
 import logging
+import numpy as np
 from unittest import TestCase
+from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.model_selection import KFold
 from octopus.ml.naive_bayes import NaiveBayes
 from octopus.ml.clustering import KMeansClustering
 from octopus.sns import get_articles, get_user_likes_map
 
 
 class ML(TestCase):
+    def evaluate_nb(self, nb, X):
+        y_true = list(map(lambda a: a.likes_count, X))
+        y_pred = list(map(nb.predict, X))
+        return r2_score(y_true, y_pred), mean_squared_error(y_true, y_pred)
+
     def test_naive_bayes(self):
-        nb = NaiveBayes(get_articles('yadoran_q'))
-        test_cases = [
-            (['일본', '한국'], 1),
-            (['연어회'], 3),
-        ]
         logger = logging.getLogger()
-        for case, Y in test_cases:
-            probability = nb.predict(case)
-            predicted_likes_cnt = nb.total_user_cnt * probability
-            logger.warning('Case: %r' % case)
-            logger.warning("NB Prob.: %.2f" % probability)
-            logger.warning("NB Cnt.: %d" % predicted_likes_cnt)
-            self.assertGreaterEqual(predicted_likes_cnt, Y)
+        articles = get_articles('felix_alterego')
+        X = articles
+        nb = NaiveBayes(X)
+        r2, mse = self.evaluate_nb(nb, X)
+        print('[No CV] R2: %r, MSE: %r' % (r2, mse))
+        kf = KFold(10)
+        train_result, test_result = [], []
+        for i, (train, test) in enumerate(kf.split(articles), 1):
+            X = np.array(articles)[train]
+            nb = NaiveBayes(X)
+            r2, mse = self.evaluate_nb(nb, X)
+            train_result.append([r2, mse])
+            logger.warning('[%dth CV Train] R2: %r, MSE: %r' % (i, r2, mse))
+
+            X = np.array(articles)[test]
+            r2, mse = self.evaluate_nb(nb, X)
+            test_result.append([r2, mse])
+            logger.warning('[%dth CV Test] R2 : %r, MSE: %r' % (i, r2, mse))
+        mean_r2 = np.array(test_result)[:, :1].mean()
+        mean_mse = np.array(test_result)[:, 1:].mean()
+        print('[CV Mean] R2: %r, MSE: %r' % (mean_r2, mean_mse))
+        self.assertGreater(mean_r2, 0.5)
 
     def test_clustering(self):
         logger = logging.getLogger()

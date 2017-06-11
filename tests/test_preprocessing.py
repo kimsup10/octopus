@@ -16,7 +16,8 @@ class Preprocessing(TestCase):
         #해운대맛집 #해운대가야밀면 #밀면'''
         result = process(sample_text)
         logging.getLogger().warning(result)
-        for word in ['부산', '여행', '충전', '대만족', '주차장', '차스타그램']:
+        for word in ['부산', '여행', '전기차',
+                     '충전', '만족', '주차장', '밀면']:
             self.assertIn(word, result)
 
     def test_image(self):

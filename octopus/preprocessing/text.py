@@ -14,6 +14,9 @@ def process(text):
     if jpype.isJVMStarted():
         jpype.attachThreadToJVM()
     try:
-        return HA.nouns(text)
+        tokens = HA.nouns(text)
+        tokens.extend(filter(lambda w: w.startswith('#'),
+                             text.split()))
+        return tokens
     except Exception:
         return text.split()
