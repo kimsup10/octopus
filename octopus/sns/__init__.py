@@ -16,7 +16,7 @@ def get_articles(target_page_id=None, limit=None):
     :rtype: list
     '''
     if limit is None:
-        limit = 50
+        limit = 100
     return api.get_articles(target_page_id, limit)
 
 
