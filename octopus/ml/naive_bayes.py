@@ -1,4 +1,5 @@
 from operator import attrgetter
+import numpy as np
 
 
 class NaiveBayes:
@@ -18,8 +19,9 @@ class NaiveBayes:
         for article in articles:
             for token in article.tokens:
                 prob = article.likes_count / self.total_user_cnt
-                if self.pre_prob.get(token, 0) < prob:
-                    self.pre_prob[token] = prob
+                self.pre_prob.setdefault(token, []).append(prob)
+        for k, v in self.pre_prob.items():
+            self.pre_prob[k] = np.mean(v)
 
     def predict(self, article):
         '''키워드를 입력받아 좋아요 될 확률을 계산합니다
