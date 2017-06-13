@@ -6,8 +6,11 @@ Paul, the octopus
 ```bash
 # Install Selenium Chrome Driver
 brew install chromedriver
-# (Optional) Install mecab
+# (Optional) Install mecab for better NLP
 bash <(curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh)
+# (Optional) Install tensorflw-gpu for faster CV
+sed -i '.bak' 's/^tensorflow$/tensorflow-gpu/' requirements.txt
+
 
 git clone git@github.com:huntrax11/octopus.git
 cd octopus
