@@ -51,6 +51,8 @@ class KMeansClustering:
     def cluster(self):
         is_centroid_changed = False
 
+        max_iter = 10
+
         while is_centroid_changed is False:
             for cluster in self.clusters:
                 cluster['users'] = []
@@ -64,6 +66,9 @@ class KMeansClustering:
                 if not np.array_equal(new_centroid, cluster['centroid']):
                     is_centroid_changed = True
                     cluster['centroid'] = new_centroid
+            max_iter -= 1
+            if max_iter <= 0:
+                break
 
         for cluster in self.clusters:
             cluster['distances'] = [

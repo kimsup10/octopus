@@ -41,6 +41,6 @@ class ML(TestCase):
 
     def test_clustering(self):
         logger = logging.getLogger()
-        k = KMeansClustering(get_user_likes_map('yadoran_q'))
+        k = KMeansClustering(get_user_likes_map('felix_alterego'))
         for i, cluster in enumerate(k.cluster()):
             logger.warning('%dth Cluster: %r' % (i+1, cluster["users"]))
