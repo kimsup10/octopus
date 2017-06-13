@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+import pandas as pd
 from unittest import TestCase
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import KFold
@@ -20,25 +21,23 @@ class ML(TestCase):
         X = articles
         nb = NaiveBayes(X)
         r2, mse = self.evaluate_nb(nb, X)
-        print('[No CV] R2: %r, MSE: %r' % (r2, mse))
+        logger.warning('[Without CV]\nR2: %r, MSE: %r' % (r2, mse))
+
+        np.random.seed(0)
+        result = pd.DataFrame()
         kf = KFold(10, shuffle=True)
-        train_result, test_result = [], []
-        for i, (train, test) in enumerate(kf.split(articles), 1):
+        for train, test in kf.split(articles):
             X = np.array(articles)[train]
             nb = NaiveBayes(X)
-            r2, mse = self.evaluate_nb(nb, X)
-            train_result.append([r2, mse])
-            logger.warning('[%dth CV Train] R2: %r, MSE: %r' % (i, r2, mse))
-
+            r2_train, mse_train = self.evaluate_nb(nb, X)
             X = np.array(articles)[test]
-            r2, mse = self.evaluate_nb(nb, X)
-            test_result.append([r2, mse])
-            logger.warning('[%dth CV Test] R2 : %r, MSE: %r' % (i, r2, mse))
-        r2 = np.array(test_result)[:, :1]
-        mse = np.array(test_result)[:, 1:]
-        print('[CV Mean] R2: %r, MSE: %r' % (r2.mean(), mse.mean()))
-        print('[CV Median] R2: %r, MSE: %r' % (np.median(r2), np.median(mse)))
-        self.assertGreater(np.median(r2), 0.0)
+            r2_test, mse_test = self.evaluate_nb(nb, X)
+            result = result.append(pd.DataFrame(
+                [[r2_train, mse_train, r2_test, mse_test]],
+                columns=["Train R2", "Train MSE", "Test R2", "Test MSE"]
+            ))
+        logger.warning('[10-Fold CV]\n%s' % result.describe())
+        self.assertGreater(result['Test R2'].median(), 0.0)
 
     def test_clustering(self):
         logger = logging.getLogger()

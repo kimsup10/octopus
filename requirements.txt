@@ -8,3 +8,4 @@ konlpy
 selenium
 Flask
 sklearn
+pandas
