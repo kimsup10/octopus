@@ -7,3 +7,4 @@ jpype1
 konlpy
 selenium
 Flask
+sklearn
