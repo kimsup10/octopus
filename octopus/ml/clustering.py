@@ -85,14 +85,13 @@ class DunnIndexEvaluator:
     @staticmethod
     def __get_max_inter_distance(points):
         if len(points) > 1:
-            return max(list(map(lambda x: KMeansClustering._distance(x[0], x[1]),
-                                combinations(points, 2))))
+            return max(map(lambda x: KMeansClustering._distance(x[0], x[1]),
+                           combinations(points, 2)))
         return None
 
     def __get_min_intra_cluster_distance(self, clusters):
-        return min(list(filter(lambda x: x is not None,
-                               map(lambda c: self.__get_max_inter_distance(c.get('users')),
-                                   clusters))))
+        return min(filter(lambda x: x is not None,
+                          map(lambda c: self.__get_max_inter_distance(c.get('users')),
+                              clusters)))
 
 # Return inter-cluster distance between two clusters by distance between centroids
-
