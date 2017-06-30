@@ -26,8 +26,8 @@ class KMeansClustering:
         }]
         for i in range(1, self.num_of_clusters):
             d_square = np.array(
-                [self._distance(self.user_likes_map[user],
-                                self.get_nearest_cluster(user)['centroid'])
+                [self._hamming_distance(self.user_likes_map[user],
+                                        self.get_nearest_cluster(user)['centroid'])
                  for user in self.user_likes_map]) ** 2
             ds_proportion = d_square / d_square.sum()
             choice = np.random.choice(d_square, 1, p=ds_proportion)
@@ -42,13 +42,13 @@ class KMeansClustering:
                                  for user in users], axis=0))
 
     @staticmethod
-    def _distance(a, b):
+    def _hamming_distance(a, b):
         return np.count_nonzero(np.not_equal(a, b))
 
     def get_nearest_cluster(self, user):
         user_likes_map = self.user_likes_map[user]
         return min(self.clusters,
-                   key=lambda c: self._distance(user_likes_map, c['centroid']))
+                   key=lambda c: self._hamming_distance(user_likes_map, c['centroid']))
 
     def cluster(self):
         is_centroid_changed = False
@@ -69,7 +69,7 @@ class KMeansClustering:
 
         for cluster in self.clusters:
             cluster['distances'] = [
-                self._distance(self.user_likes_map[user], cluster['centroid'])
+                self._hamming_distance(self.user_likes_map[user], cluster['centroid'])
                 for user in cluster['users']
             ]
 
@@ -85,7 +85,7 @@ class DunnIndexEvaluator:
     @staticmethod
     def __get_max_inter_distance(points):
         if len(points) > 1:
-            return max(map(lambda x: KMeansClustering._distance(x[0], x[1]),
+            return max(map(lambda x: KMeansClustering._hamming_distance(x[0], x[1]),
                            combinations(points, 2)))
         return None
 
