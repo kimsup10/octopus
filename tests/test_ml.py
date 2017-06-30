@@ -45,7 +45,7 @@ class ML(TestCase):
         for i, cluster in enumerate(k.cluster()):
             logger.warning('%dth Cluster: %r' % (i+1, cluster["users"]))
 
-    def test_max_inter_distance(self):
+    def test_dunn_index_evaluation(self):
         logger = logging.getLogger()
         k = KMeansClustering(get_user_likes_map('yadoran_q'))
         e = DunnIndexEvaluator()
