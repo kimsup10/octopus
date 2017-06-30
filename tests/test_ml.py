@@ -4,7 +4,7 @@ from unittest import TestCase
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import KFold
 from octopus.ml.naive_bayes import NaiveBayes
-from octopus.ml.clustering import KMeansClustering
+from octopus.ml.clustering import KMeansClustering, DunnIndexEvaluator
 from octopus.sns import get_articles, get_user_likes_map
 
 
@@ -44,3 +44,11 @@ class ML(TestCase):
         k = KMeansClustering(get_user_likes_map('yadoran_q'))
         for i, cluster in enumerate(k.cluster()):
             logger.warning('%dth Cluster: %r' % (i+1, cluster["users"]))
+
+    def test_max_inter_distance(self):
+        logger = logging.getLogger()
+        k = KMeansClustering(get_user_likes_map('yadoran_q'))
+        e = DunnIndexEvaluator()
+        di = e.evaluate(k.cluster())
+        logger.warning('DI: %d' % di)
+        self.assertGreater(di, 0)
